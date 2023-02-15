@@ -1,1 +1,1 @@
-my second readme
+Shell init file variables
