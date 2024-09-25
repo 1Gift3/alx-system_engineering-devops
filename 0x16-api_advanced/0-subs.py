@@ -1,18 +1,25 @@
 #!/usr/bin/python3
-"""reddit subscribers"""
-
+"""
+get modules
+"""
 import requests
 
 
 def number_of_subscribers(subreddit):
     """
-    Retrieve the number of subscribers for a given subreddit using
+    finding of subscribers in 
+    a reddit channel
     """
-    if subreddit is None:
+    url = f'https://www.reddit.com/r/{subreddit}/about.json'
+    headers = {'User-Agent': 'MyCustomUserAgentNetwork/1.0'}
+    try:
+        feedback = requests.get(url, headers=headers, allow_redirects=False)
+
+        if feedback.status_code == 200:
+            content = feedback.json()
+            return content['data']['subscribers']
+        else:
+            return 0
+    except Exception as err:
+        print(f'Error: {e}')
         return 0
-    url = "http://www.reddit.com/r/{}/about.json".format(subreddit)
-    user_agent = {"User-Agent": "ALX project about advanced api"}
-
-    response = requests.get(url, headers=user_agent).json()
-
-    return response.get("data", {}).get("subscribers", 0)
