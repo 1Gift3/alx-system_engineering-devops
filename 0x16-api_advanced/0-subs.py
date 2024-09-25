@@ -1,20 +1,16 @@
 #!/usr/bin/python3
-"""
-imported modules
-"""
-
 import requests
 
-
 def number_of_subscribers(subreddit):
-    """
-    Retrieve the number of subscribers for a given
-    """
-    if subreddit is None:
+    """Returns the number of subscribers for a given subreddit."""
+    url = f"https://www.reddit.com/r/{subreddit}/about.json"
+    headers = {
+        'User-Agent': 'Custom User Agent'
+    }
+    response = requests.get(url, headers=headers, allow_redirects=False)
+
+    if response.status_code != 200:
         return 0
-    url = "http://www.reddit.com/r/{}/about.json".format(subreddit)
-    user_agent = {"User-Agent": "ALX project about advanced api"}
 
-    response = requests.get(url, headers=user_agent).json()
-
-    return response.get("data", {}).get("subscribers", 0)
+    data = response.json()
+    return data['data']['subscribers']
