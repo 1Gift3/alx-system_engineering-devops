@@ -7,7 +7,7 @@ import requests
 
 def number_of_subscribers(subreddit):
     """
-    finding of subscribers in 
+    finding of subscribers in
     a reddit channel
     """
     url = f'https://www.reddit.com/r/{subreddit}/about.json'
