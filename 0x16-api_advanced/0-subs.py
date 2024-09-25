@@ -12,7 +12,7 @@ def number_of_subscribers(subreddit):
     """
     if subreddit is None:
         return 0
-    url = f"http://www.reddit.com/r/{subreddit}/about.json"
+    url = "http://www.reddit.com/r/{}/about.json".format(subreddit)
     agent = {"User-Agent": "ALX project about advanced api"}
 
     response = requests.get(url, headers=agent).json()
