@@ -1,3 +1,4 @@
+# user limits
 exec { 'replace_hard_limit':
   command  => 'sed -i "s/holberton hard nofile 5/holberton hard nofile 5000/" /etc/security/limits.conf',
   provider => 'shell'
