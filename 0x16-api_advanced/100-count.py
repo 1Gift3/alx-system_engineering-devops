@@ -1,49 +1,44 @@
 #!/usr/bin/python3
-""" Module for counting word occurrences in subreddit hot posts """
-
-import re
+"""
+imported request module
+"""
 import requests
 
 
-def count_word_occurrences(red, search_terms, count_dict={}, next_token=""):
+def count_words(subreddit, word_list, word_count={}, after=None):
     """
-    Count how many times specified words appear in hot posts of a subreddit.
-
-    Args:
-        red (str): The name of the subreddit to analyze.
-        search_terms (list): A list of words to count.
-        count_dict (dict, optional): A dictionary to store counts.
-                                      Defaults to {}.
-        next_token (str, optional): A Reddit post identifier for pagination.
-                                    Defaults to ""
+    counter function of words
     """
-    if red is None:
+    feedback = requests.get(f"https://www.reddit.com/r/{subreddit}/hot.json",
+                            params={"after": after},
+                            headers={"User-Agent": "My-User-Agent"},
+                            allow_redirects=False)
+    if feedback.status_code != 200:
         return None
 
-    endpoint = "http://www.reddit.com/r/{}/hot.json?limit=100".format(
-        red
-        )
-    headers = {"User-Agent": "ALX project about advanced API"}
+    reponse_json = feedback.json()
+    appearance = []
+    for d in reponse_json.get("data").get('children'):
+        appearance.append(d.get('data').get('title'))
+    if not appearance:
+        return None
+    word_list = list(dict.fromkeys(word_list))
+    if word_count == {}:
+        word_count = {word: 0 for word in word_list}
 
-    response = requests.get(
-        endpoint, params={"after": next_token}, headers=headers
-        )
+    for data in appearance:
+        data_split = data.split(' ')
+        for word in word_list:
+            for sm in data_split:
+                if sm.lower() == word.lower():
+                    word_count[word] += 1
 
-    if response.status_code == 200:
-        next_token = response.json().get("data").get("after")
-        if not next_token:
-            sorted_counts = sorted(
-                count_dict.items(), key=lambda x: (-x[1], x[0])
-                )
-            for term, count in sorted_counts:
-                print('{}: {}'.format(term, count))
-            return
-        for post in response.json().get("data").get("children"):
-            title = post.get("data").get("title").lower()
-            for term in search_terms:
-                term = term.lower()
-                if term in title:
-                    count_dict[term] = count_dict.get(term, 0) + 1
-        return count_word_occurrences(
-            red, search_terms, count_dict, next_token
-            )
+    if reponse_json.get("data").get("after") is None:
+        sorts = sorted(word_count.items(), key=lambda kv: kv[0])
+        sorts = sorted(word_count.items(), key=lambda kv: kv[1], reverse=True)
+        for key, value in sorts:
+            if value != 0:
+                print(f'{key}: {value}')
+    else:
+        return count_words(subreddit, word_list, word_count,
+                           reponse_json.get("data").get("after"))
