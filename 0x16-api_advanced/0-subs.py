@@ -1,17 +1,27 @@
 #!/usr/bin/python3
-"""import modules"""
+""" module of the function number_of_subscribers """
+
 import requests
 
+
 def number_of_subscribers(subreddit):
-    """Returns the number of subscribers for a given subreddit."""
-    url = f"https://www.reddit.com/r/{subreddit}/about.json"
-    headers = {
-        'User-Agent': 'Custom User Agent'
-    }
-    response = requests.get(url, headers=headers, allow_redirects=False)
+    """
+    Retrieve the number of subscribers for a given subreddit using
+    the Reddit API.
 
-    if response.status_code != 200:
+    Args:
+        subreddit (str): The name of the subreddit for which to
+        retrieve subscriber count.
+
+    Returns:
+        int: The number of subscribers for the specified subreddit,
+        or 0 if not found or an error occurs.
+    """
+    if subreddit is None:
         return 0
+    url = "http://www.reddit.com/r/{}/about.json".format(subreddit)
+    user_agent = {"User-Agent": "ALX project about advanced api"}
 
-    data = response.json()
-    return data['data']['subscribers']
+    response = requests.get(url, headers=user_agent).json()
+
+    return response.get("data", {}).get("subscribers", 0)
