@@ -1,20 +1,18 @@
 #!/usr/bin/python3
-"""
-How many subs?
-"""
+"""reddit subscribers"""
 
 import requests
 
 
 def number_of_subscribers(subreddit):
     """
-    finding number of subscribers
+    Retrieve the number of subscribers for a given subreddit using
     """
     if subreddit is None:
         return 0
     url = "http://www.reddit.com/r/{}/about.json".format(subreddit)
-    agent = {"User-Agent": "ALX project about advanced api"}
+    user_agent = {"User-Agent": "ALX project about advanced api"}
 
-    response = requests.get(url, headers=agent).json()
+    response = requests.get(url, headers=user_agent).json()
 
     return response.get("data", {}).get("subscribers", 0)
