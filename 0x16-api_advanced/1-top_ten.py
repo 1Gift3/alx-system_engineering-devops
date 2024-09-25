@@ -1,27 +1,17 @@
 #!/usr/bin/python3
 """import modules"""
-
 import requests
 
 
 def top_ten(subreddit):
-    """
-    Retrieve and print the titles of the top ten hot posts for a
-    given subreddit using the Reddit API.
-
-    Args:
-        subreddit (str): The name of the subreddit for which to
-        retrieve the top ten hot posts.
-    """
-    if subreddit is None:
-        return 0
-    url = "http://www.reddit.com/r/{}/hot.json".format(subreddit)
-    agent = {"User-Agent": "ALX project about advanced api"}
-
-    feedback = requests.get(url, params={"limit": 10}, headers=agent)
-
-    if feedback.status_code == 200:
-        for post in feedback.json().get('data', {}).get('children', []):
+    """top ten subs"""
+    url = f'https://www.reddit.com/r/{subreddit}/hot.json?limit=10'
+    headers = {'User-Agent': 'MyCustomUserAgent/1.0'}
+    response = requests.get(url, headers=headers, allow_redirects=False)
+    if response.status_code == 200:
+        data = response.json()
+        list_of_posts = data['data']['children']
+        for post in list_of_posts:
             print(post.get('data').get('title'))
     else:
         print(None)
