@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# app server nginx config
+params=$2
+ps aux | grep gunicorn | grep -v grep | awk '{print $params}' | xargs kill -HUP
